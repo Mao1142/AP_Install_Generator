@@ -51,33 +51,33 @@ namespace AP_install_generate
                 "sudo cat>>/etc/hostapd/hostapd.conf<<EOF\n" +
                 "interface=wlan0\n" +
                 "\n# Use the nl80211 driver with the brcmfmac driver\n" +
-                "driver = nl80211\n" +
+                "driver=nl80211\n" +
                 "\n# The name to use for the network\n" +
-                $"ssid = {SSID}\n" +
+                $"ssid={SSID}\n" +
                 "\n# Use the 2.4GHz band\n" +
-                "hw_mode = g\n" +
+                "hw_mode=g\n" +
                 "\n# Use channel 6\n" +
-                "channel = 6\n" +
+                "channel=6\n" +
                 "\n# Enable 802.11n\n" +
-                "ieee80211n = 1\n" +
+                "ieee80211n=1\n" +
                 "\n# Enable WMM\n" +
-                "wmm_enabled = 1\n" +
+                "wmm_enabled=1\n" +
                 "\n# Enable 40MHz channels with 20ns guard interval\n" +
-                "ht_capab =[HT40][SHORT - GI - 20][DSSS_CCK - 40]\n" +
+                "ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]\n" +
                 "\n# Accept all MAC addresses\n" +
-                "macaddr_acl = 0\n" +
+                "macaddr_acl=0\n" +
                 "\n# Use WPA authentication\n" +
-                "auth_algs = 1\n" +
+                "auth_algs=1\n" +
                 "\n# Broadcast the network name\n" +
-                "ignore_broadcast_ssid = 0\n" +
+                "ignore_broadcast_ssid=0\n" +
                 "\n# Use WPA2\n" +
-                "wpa = 2\n" +
+                "wpa=2\n" +
                 "\n# Use a pre-shared key\n" +
-                "wpa_key_mgmt = WPA - PSK\n" +
+                "wpa_key_mgmt=WPA-PSK\n" +
                 "\n# The WPA2 passphrase (password)\n" +
-                $"wpa_passphrase = {PW}\n" +
+                $"wpa_passphrase={PW}\n" +
                 "\n# Use AES, instead of TKIP\n" +
-                "rsn_pairwise = CCMP\n"+
+                "rsn_pairwise=CCMP\n"+
                 "EOF\n\n" +
                 //hostapd
                 "echo Setting Configuration file\n" +
@@ -101,12 +101,12 @@ namespace AP_install_generate
                 "sudo cp /home/pi/sysctl.conf /etc/\n" +
                 "sudo rm -f /home/pi/sysctl.conf \n" +
                 //start service
-                @"sudo sh - c ""echo 1 > /proc/sys/net/ipv4/ip_forward"""+"\n"+
+                @"sudo sh -c ""echo 1 > /proc/sys/net/ipv4/ip_forward"""+"\n"+
                 //connect wlan0 & eth0
                 "sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE\n" +
                 "sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT\n" +
                 "sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT\n" +
-                @"sudo sh -c ""iptables - save > / etc / iptables.ipv4.nat""" + "\n" +
+                @"sudo sh -c ""iptables-save > /etc/iptables.ipv4.nat""" + "\n" +
                 //rc.local
                 "sudo cat>>/home/pi/rc.local<<EOF\n" +
                 $"{Properties.Resources.rc_local}\n"+
@@ -114,9 +114,10 @@ namespace AP_install_generate
                 "sudo cp /home/pi/rc.local /etc/\n" +
                 "sudo rm -f /home/pi/rc.local\n" +
                 //Enable service
+                "sudo service hostapd stop\n"+
+                "sudo service dnsmasq start\n" +
                 "sudo systemctl unmask hostapd\n" +
-                "sudo service hostapd start\n" +
-                "sudo service dnsmasq start\n";
+                "sudo service hostapd start\n" ;
             return content;
         }
         
