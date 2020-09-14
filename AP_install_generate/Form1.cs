@@ -22,30 +22,37 @@ namespace AP_install_generate
         private void btn_generate_Click(object sender, EventArgs e)
         {
             string path = "";
-            var folderBrowser = new FolderBrowserDialog();
-            folderBrowser.ShowDialog();
-            if (folderBrowser.SelectedPath != null &&
-                folderBrowser.SelectedPath.Length > 0)
+            using (var folderBrowser = new FolderBrowserDialog())
             {
-                path = folderBrowser.SelectedPath;
-                if (path[path.Length - 1] != 92)
+                folderBrowser.ShowDialog();
+                if (folderBrowser.SelectedPath != null &&
+                    folderBrowser.SelectedPath.Length > 0)
                 {
-                    path += "\\";
+                    path = folderBrowser.SelectedPath;
+                    if (path[path.Length - 1] != 92)
+                    {
+                        path += "\\";
+                    }
                 }
             }
-            Data data = new Data(txb_IP.Text, txb_ssid.Text, txb_pw.Text);
 
+            Data data = new Data(txb_IP.Text, txb_ssid.Text, txb_pw.Text);
+            if (System.IO.File.Exists($"{path}install.sh"))
+            {
+                if(MessageBox.Show("檔案已經存在於目標位置,是否要覆蓋?","覆蓋檔案",MessageBoxButtons.YesNo)
+                    == DialogResult.No)
+                {
+                    MessageBox.Show("取消生成");
+                    return;
+                }
+            }
+            
             using (StreamWriter writer = new StreamWriter($"{path}install.sh"))
             {
                 writer.Write($"{data.script_generate()}");
                 writer.Close();
             }
             MessageBox.Show("complete");
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

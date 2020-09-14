@@ -111,8 +111,8 @@
             this.Controls.Add(this.txb_IP);
             this.Controls.Add(this.btn_generate);
             this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "腳本產生器";
             this.ResumeLayout(false);
             this.PerformLayout();
 
